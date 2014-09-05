@@ -14,38 +14,21 @@ if (argv['ticket-key'])
 
 var mitm = require('../').createStream(argv);
 var tp = require('tcpdump-parser');
-var Ascii = require('ascii');
 
 process.stdin.pipe(new tp()).pipe(mitm);
 
 mitm.on('request', function(req) {
-  if (!/\.(png|jpg|jpeg)$/.test(req.url))
-    return;
+  console.log('>>', req.url);
 
-  req.on('response', function(res) {
-    if (res.statusCode < 200 || res.statusCode >= 500)
+  var chunks = '';
+  req.on('data', function(chunk) {
+    chunks += chunk;
+  });
+  req.on('end', function() {
+    if (!chunks)
       return;
 
-    var chunks = [];
-    res.on('data', function(chunk) {
-      chunks.push(chunk);
-    });
-    res.on('end', function() {
-      var content = Buffer.concat(chunks);
-
-      var ascii = new Ascii('who cares about source');
-      ascii.load = function(callback) {
-        callback(null, content);
-      };
-
-      ascii.convert(function(err, art) {
-        if (err)
-          throw err;
-
-        console.log(req.url);
-        console.log(art);
-      });
-    });
+    console.log(req.url, chunks);
   });
 }).on('error', function(err) {
   console.log(err);
