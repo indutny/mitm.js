@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/indutny/mitm.js",
   "dependencies": {
+    "ascii": "^0.1.0",
+    "async": "^0.9.0",
+    "multiparty": "^3.3.2",
     "tcpdump-parser": "^0.3.0",
     "tls.js": "^0.4.0",
     "yargs": "^1.3.1"
