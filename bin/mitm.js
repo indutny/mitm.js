@@ -13,9 +13,10 @@ if (argv['ticket-key'])
   argv['ticket-key'] = fs.readFileSync(argv['ticket-key']);
 
 var mitm = require('../').createStream(argv);
-var tp = require('tcpdump-parser');
+var TP = require('tcpdump-parser');
+var tp = new TP();
 
-process.stdin.pipe(new tp()).pipe(mitm);
+process.stdin.pipe(tp).pipe(mitm);
 
 mitm.on('request', function(req) {
   console.log('>>', req.url);
